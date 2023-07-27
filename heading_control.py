@@ -78,7 +78,7 @@ def main():
     # TODO: convert heading to radians
     desired_heading = None
 
-    pid = PID(0.5, 0.0, 10.0, 100)
+    pid = PID(50, 0, 0, 3)
 
     while True:
         # get yaw from the vehicle
