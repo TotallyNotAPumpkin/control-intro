@@ -88,11 +88,11 @@ def main():
 
     # ask user for depth
     desired_depth = float(input("Enter target depth: "))
-    pid = PID(60, 0.0, 10.0, 100)
-
+    # pid = PID(52, 5.0, 25.0, 2)
+    pid = PID(45, 0.0, 10.0, 2)
     while True:
         # get pressure from the vehicle
-        msg = mav.recv_match(type="SCALED_PRESSURE", blocking=True)
+        msg = mav.recv_match(type="SCALED_PRESSURE2", blocking=True)
         press_abs = msg.press_abs  # in hPa
 
         # calculate depth
