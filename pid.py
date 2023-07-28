@@ -37,16 +37,19 @@ class PID:
 
         self.last_time = current_time
 
-        self.integral = self._get_integral(error, dt)
-
+        self.integral = np.clip(self._get_integral(error, dt)*self.K_i, -self.integral_limit, self.integral_limit)
         if error_derivative is None:
             derivative = self._get_derivative(error, dt)
         else:
             derivative = error_derivative
 
-        # TODO: Calculate the PID output DONE
-        output = (self.K_p * error) + (self.K_i * self.integral) + (self.K_d * derivative)
+        # TODO: Calculate the PID output
+        
+
+        output = self.K_p*error + self.integral + self.K_d*derivative
+
         self.last_error = error
+
         return output
 
     def _get_integral(self, error, dt):
@@ -59,11 +62,11 @@ class PID:
         """
 
         # TODO: Calculate and return the integral term
-
         self.integral += error * dt
-        self.integral = np.clip(self.integral, -self.integral_limit, self.integral_limit)
+        if self.integral is not None:
+            integral = self.integral
 
-        return self.integral
+        return integral
 
     def _get_derivative(self, error, dt):
         """Calculate the derivative term
@@ -75,5 +78,7 @@ class PID:
         """
 
         # TODO: Calculate and return the derivative term
-        err_rate = (error - self.last_error) / dt
-        return err_rate
+
+        derivative = (error - self.last_error) / dt
+
+        return derivative
