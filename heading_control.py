@@ -38,7 +38,8 @@ def set_rotation_power(mav, power=0):
     power = int(power)
 
     set_rc_channel_pwm(mav, 4, 1500 + power * 5)
-
+    set_rc_channel_pwm(mav, 6, 1500 + 20 * 5)
+    
 
 def main():
     mav = mavutil.mavlink_connection("udpin:0.0.0.0:14550")
@@ -57,11 +58,17 @@ def main():
     # wait for the heartbeat message to find the system ID
     mav.wait_heartbeat()
 
+    # ask user for depth
+    desired_heading_deg = float(input("Enter target heading: "))
+
     # arm the vehicle
     print("Arming")
     mav.arducopter_arm()
     mav.motors_armed_wait()
     print("Armed")
+    set_rc_channel_pwm(mav, 6, 1500 + 0 * 5)
+    set_rc_channel_pwm(mav, 5, 1500 + 0 * 5)
+
 
     # set mode to MANUAL
     print("Setting mode to MANUAL")
@@ -72,13 +79,11 @@ def main():
     )
     print("Mode set to MANUAL")
 
-    # ask user for depth
-    desired_heading_deg = float(input("Enter target heading: "))
 
     # TODO: convert heading to radians
     desired_heading = np.deg2rad(desired_heading_deg) 
 
-    pid = PID(35.0, 0, 20.0, 10.0)
+    pid = PID(27.0, 1, -15, 5.0)
 
     while True:
         # get yaw from the vehicle
